@@ -1,0 +1,61 @@
+<!-- This view sets up the map dispalying buoy conditions on the buoy page. -->
+<!-- I used the MapQuest.js library and the MapQuest API -->
+
+<html>
+  <head>
+    <script src="https://api.mqcdn.com/sdk/mapquest-js/v1.3.2/mapquest.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://api.mqcdn.com/sdk/mapquest-js/v1.3.2/mapquest.css"/>
+
+
+    <script>
+      var buoycopy = <%-JSON.stringify(buoys)%>; //loads "buoys" array from app.js into here
+    </script>
+    <script type="text/javascript" >
+      window.onload = function() {
+        L.mapquest.key = 'lYrP4vF3Uk5zgTiGGuEzQGwGIVDGuy24';
+
+
+        var map = L.mapquest.map('map', { //sets up initial map
+          center: [36.868, -117.267],
+          layers: L.mapquest.tileLayer('map'),
+          zoom: 5
+        });
+
+        //loops through "buoys" array and adds corresponding markers. buoy condition
+        //can be accessed by clicking on the marker.
+         for(var i=0; i < buoycopy.length; i++) {
+            lat = buoycopy[i].lat;
+            lon = buoycopy[i].lon;
+
+            if (buoycopy[i].height < 4 && buoycopy[i].period < 4)
+            {
+              L.marker([lat, lon], {
+              icon: L.mapquest.icons.marker(),
+              draggable: false
+            }).bindPopup("poor").addTo(map);
+            }
+
+            if (buoycopy[i].height < 12 && buoycopy[i].period < 12)
+            {
+              L.marker([lat, lon], {
+              icon: L.mapquest.icons.marker(),
+              draggable: false
+            }).bindPopup("fair").addTo(map);
+            }
+
+            if (buoycopy[i].height > 12 && buoycopy[i].period > 12)
+            {
+              L.marker([lat, lon], {
+              icon: L.mapquest.icons.marker(),
+              draggable: false
+            }).bindPopup("good").addTo(map);
+            }
+        };
+    };
+    </script>
+  </head>
+
+  <body style="border: 0; margin: 0;">
+    <div id="map" style="width: 100%; height: 530px;"></div>
+  </body>
+</html>
